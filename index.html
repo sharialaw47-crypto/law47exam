@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>بوابة الاستعلام عن الاختبارات - كلية الشريعة والقانون</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f6f9; margin: 0; padding: 20px; direction: rtl; display: flex; flex-direction: column; min-height: 100vh; }
+        .main-wrapper { flex: 1; }
+        
+        .header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 20px 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 950px;
+            margin: 0 auto 25px auto;
+            border-bottom: 5px solid #0056b3;
+        }
+        .header img { height: 95px; width: auto; max-width: 140px; object-fit: contain; border-radius: 6px; }
+        .header-title { text-align: center; flex: 1; margin: 0 15px; }
+        .header-title h2 { color: #2c3e50; margin: 0 0 5px 0; font-size: 19px; font-weight: 600; }
+        .header-title h1 { color: #0056b3; margin: 0; font-size: 24px; font-weight: 800; }
+        .header-title h3 { color: #7f8c8d; margin: 5px 0 0 0; font-size: 15px; font-weight: 500; }
+
+        .card { background: white; padding: 30px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); max-width: 950px; margin: 0 auto; }
+        .main-tabs { display: flex; gap: 15px; justify-content: center; margin-bottom: 25px; }
+        .tab-btn { flex: 1; padding: 15px; font-size: 17px; font-weight: bold; border: 2px solid #0056b3; background: #f8f9fa; color: #0056b3; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+        .tab-btn:hover, .tab-btn.active { background: #0056b3; color: white; box-shadow: 0 4px 10px rgba(0,86,179,0.3); }
+        
+        #facultyLoginBox { text-align: center; padding: 25px; background: #f8f9fa; border-radius: 10px; border: 1px dashed #cbd5e1; margin-bottom: 20px; }
+        #facultyContentArea { display: none; }
+        .sub-tabs { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; background: #e9ecef; padding: 8px; border-radius: 6px; }
+        .sub-tab-btn { flex: 1; padding: 10px; font-size: 15px; font-weight: bold; border: none; background: transparent; color: #495057; border-radius: 4px; cursor: pointer; }
+        .sub-tab-btn.active { background: white; color: #0056b3; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .search-section { display: none; text-align: center; }
+        .search-section.active { display: block; }
+        .search-box { display: flex; gap: 10px; max-width: 500px; margin: 15px auto 0 auto; }
+        input, select { padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; text-align: center; }
+        .search-btn { padding: 12px 25px; background-color: #0056b3; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; font-weight: bold; }
+        .search-btn:hover { background-color: #003d80; }
+        
+        .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; background: #f1f5f9; padding: 18px; border-radius: 8px; margin-bottom: 20px; align-items: center; }
+        .filter-item { display: flex; flex-direction: column; gap: 5px; text-align: right; }
+        .filter-item label { font-size: 13px; font-weight: bold; color: #475569; }
+
+        .attendance-sheet { border: 1px solid #ccc; padding: 20px; background: #fff; text-align: right; margin-top: 15px; border-radius: 8px; }
+        .sheet-header-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
+        .sheet-header-logo { height: 85px; width: auto; object-fit: contain; }
+        .sheet-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #fafafa; padding: 12px; border: 1px solid #eaeaea; font-size: 14px; margin-bottom: 15px; border-radius: 4px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: center; font-size: 13px; }
+        th { background-color: #f2f2f2; font-weight: bold; color: #000; }
+        
+        .signatures-area { margin-top: 30px; display: flex; justify-content: space-around; text-align: center; font-weight: bold; font-size: 14px; padding-top: 20px; }
+        .count-summary { display: flex; justify-content: space-around; margin-top: 20px; font-weight: bold; font-size: 15px; border-top: 1px dashed #ccc; padding-top: 10px; }
+
+        .error { color: #dc3545; margin-top: 15px; font-weight: bold; text-align: center; }
+        .thanks-footer { margin-top: 20px; font-size: 16px; font-weight: bold; color: #004085; background-color: #cce5ff; padding: 12px; border-radius: 6px; text-align: center; }
+        .student-wishes { margin-top: 20px; font-size: 16px; font-weight: bold; color: #155724; background-color: #d4edda; padding: 12px; border-radius: 6px; text-align: center; border: 1px solid #c3e6cb; }
+
+        .page-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 15px;
+            font-size: 13px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            font-weight: 600;
+        }
+
+        @media print {
+            @page { size: A4; margin: 10mm; }
+            body * { visibility: hidden; }
+            body { padding: 0; background: #fff; }
+            .attendance-sheet, .attendance-sheet * { visibility: visible; }
+            .attendance-sheet { position: absolute; left: 0; top: 0; width: 100%; border: none; padding: 0; }
+            .no-print { display: none !important; }
+            .page-footer { display: block !important; position: fixed; bottom: 0; width: 100%; border: none; font-size: 11px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <div class="header no-print">
+            <img src="https://cdn.phototourl.com/free/2026-08-03-595b3f0e-ace4-4b94-bd38-30d21872c3b6.jpg" alt="شعار جامعة جازان">
+            <div class="header-title">
+                <h2>جامعة جازان</h2>
+                <h1>كلية الشريعة والقانون</h1>
+                <h3>بوابة الاستعلام عن الاختبارات</h3>
+            </div>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyz7p5xi0_WWup6Wlz2JlbkOyoGKJvcWIIQbuRSJnqfQ&s=10" alt="مبنى الكلية">
+        </div>
+
+        <div class="card">
+            <div class="main-tabs no-print">
+                <button class="tab-btn active" id="tabFaculty" onclick="switchMainTab('faculty')">الهيئة التدريسية / الهيئة الإدارية</button>
+                <button class="tab-btn" id="tabStudents" onclick="switchMainTab('students')">الطلبة</button>
+            </div>
+
+            <!-- 1. قسم أعضاء هيئة التدريس والهيئة الإدارية -->
+            <div id="facultySection" class="search-section active">
+                <div id="facultyLoginBox" class="no-print">
+                    <label for="facultyId" style="font-weight: bold; display: block; margin-bottom: 10px; color: #333;">الرقم الوظيفي:</label>
+                    <div class="search-box" style="margin: 0 auto;">
+                        <input type="text" id="facultyId" placeholder="أدخل الرقم الوظيفي..." value="">
+                        <button class="search-btn" onclick="verifyFacultyLogin()">دخول</button>
+                    </div>
+                    <div id="loginError"></div>
+                </div>
+
+                <div id="facultyContentArea">
+                    <div class="sub-tabs no-print">
+                        <button class="sub-tab-btn active" id="proctoringTabBtn" onclick="switchFacultySub('proctoring')">المراقبات</button>
+                        <button class="sub-tab-btn" id="schedulesTabBtn" onclick="switchFacultySub('schedules')">كشوف حضور الاختبار النهائي</button>
+                    </div>
+
+                    <div id="proctoringSub" class="sub-content">
+                        <div id="facultyResult"></div>
+                    </div>
+
+                    <div id="schedulesSub" class="sub-content" style="display: none;">
+                        <div class="filter-grid no-print">
+                            <div class="filter-item">
+                                <label>الشطر</label>
+                                <select id="genderFilter" onchange="onGenderChange()">
+                                    <option value="male" selected>الطلاب</option>
+                                    <option value="female">الطالبات</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label>رقم الشعبة (اكتب أو اختر)</label>
+                                <input type="text" id="sectionFilter" list="sectionsList" value="24" oninput="syncCourseBySection()" placeholder="أدخل رقم الشعبة...">
+                                <datalist id="sectionsList">
+                                    <option value="24">شعبة 24 (تأمين)</option>
+                                    <option value="44">شعبة 44 (إجراءات جزائية)</option>
+                                    <option value="36">شعبة 36 (دولي خاص)</option>
+                                    <option value="8">شعبة 8 (أصول الفقه)</option>
+                                    <option value="27">شعبة 27 (إجراءات جزائية - طالبات)</option>
+                                    <option value="28">شعبة 28 (القضاء والإثبات)</option>
+                                    <option value="29">شعبة 29 (فقه الأسرة-2)</option>
+                                </datalist>
+                            </div>
+                            <div class="filter-item">
+                                <label>اسم المقرر</label>
+                                <select id="courseFilter" onchange="syncSectionByCourse()">
+                                    <!-- يتم تحميل الخيارات آلياً بحسب الشطر -->
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label>القاعة (اللجنة)</label>
+                                <select id="roomFilter" onchange="updateSheets()">
+                                    <option value="1">قاعة 1</option>
+                                    <option value="2">قاعة 2</option>
+                                    <option value="SO19">قاعة SO19</option>
+                                </select>
+                            </div>
+                            <div class="filter-item" style="justify-content: flex-end;">
+                                <button class="search-btn" onclick="window.print()" style="background-color: #28a745;">طباعة الكشف</button>
+                            </div>
+                        </div>
+
+                        <div id="attendanceSheetContainer"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. قسم الطلبة -->
+            <div id="studentsSection" class="search-section">
+                <label for="studentId" style="font-weight: bold; display: block; margin-bottom: 8px;">الرقم الجامعي للطالب/ الطالبة:</label>
+                <div class="search-box">
+                    <input type="text" id="studentId" placeholder="أدخل الرقم الجامعي هنا...">
+                    <button class="search-btn" onclick="searchStudent()">بحث</button>
+                </div>
+                <div id="studentResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-footer">
+        إشراف وكالة كلية الشريعة والقانون للشؤون الأكاديمية<br>
+        الإصدار الأول - الفصل الصيفي 1448هـ
+    </div>
+
+    <script>
+        // بيانات المقررات
+        const penal_R1   = { code: "411قنن", section: "44", name: "نظام الإجراءات الجزائية", instructor: "د. تركي بن سرحان سريحان العتيبي", day: "الأحد", date: "26/ 02/ 1448هـ", time: "8 - 10ص", room: "1", gender: "male", center: "مجمع أبو عريش للبنين" };
+        const int_R1    = { code: "421قنن", section: "36", name: "النظام الدولي الخاص", instructor: "د. تركي بن سرحان سريحان العتيبي", day: "الاثنين", date: "27/ 02/ 1448هـ", time: "8 - 10ص", room: "1", gender: "male", center: "مجمع أبو عريش للبنين" };
+        const int_R2    = { code: "421قنن", section: "36", name: "النظام الدولي الخاص", instructor: "د. تركي بن سرحان سريحان العتيبي", day: "الاثنين", date: "27/ 02/ 1448هـ", time: "8 - 10ص", room: "2", gender: "male", center: "مجمع أبو عريش للبنين" };
+        const ins_R1    = { code: "425قنن", section: "24", name: "نظام التأمين", instructor: "د. عبد الله بن علي بن عبده نجمي", day: "الثلاثاء", date: "28/ 02/ 1448هـ", time: "8 - 10ص", room: "1", gender: "male", center: "مجمع أبو عريش للبنين" };
+        const ins_R2    = { code: "425قنن", section: "24", name: "نظام التأمين", instructor: "د. عبد الله بن علي بن عبده نجمي", day: "الثلاثاء", date: "28/ 02/ 1448هـ", time: "8 - 10ص", room: "2", gender: "male", center: "مجمع أبو عريش للبنين" };
+
+        const usul_Female   = { code: "424أصل-3", section: "8", name: "أصول الفقه", instructor: "د. صقر بن أحمد بن عطيفي طوهري", day: "الأحد", date: "26/ 02/ 1448هـ", time: "08:00 - 10:00", room: "SO19", gender: "female", center: "المجمع الأكاديمي الشرقي" };
+        const ejraat_Female = { code: "430نظم-2", section: "27", name: "الإجراءات الجزائية", instructor: "د. زمزم بنت محمد هباب علي", day: "الأحد", date: "26/ 02/ 1448هـ", time: "10:30 - 12:30", room: "SO19", gender: "female", center: "المجمع الأكاديمي الشرقي" };
+        const qada_Female   = { code: "417فقه-3", section: "28", name: "القضاء والإثبات", instructor: "د. محمد بن عبده حاسر عواف حمدي", day: "الاثنين", date: "27/ 02/ 1448هـ", time: "08:00 - 10:00", room: "SO19", gender: "female", center: "المجمع الأكاديمي الشرقي" };
+        const osra_Female   = { code: "327فقه-2", section: "29", name: "فقه الأسرة-2", instructor: "د. زمزم بنت محمد هباب علي", day: "الأحد", date: "26/ 02/ 1448هـ", time: "08:00 - 10:00", room: "SO19", gender: "female", center: "المجمع الأكاديمي الشرقي" };
+
+        const facultyDatabase = {
+            "4355354": { name: "د. عبد الله بن علي بن عبده نجمي", schedule: [{ center: "مجمع أبو عريش للبنين", day: "الأحد", date: "26/ 02/ 1448هـ", time: "8 - 10ص", period: "الأولى", room: "1" }, { center: "مجمع أبو عريش للبنين", day: "الاثنين", date: "27/ 02/ 1448هـ", time: "8 - 10ص", period: "الأولى", room: "2" }, { center: "مجمع أبو عريش للبنين", day: "الثلاثاء", date: "28/ 02/ 1448هـ", time: "8 - 10ص", period: "الأولى", room: "2" }] },
+            "4373044": { name: "د. تركي بن سرحان بن سريحان العتيبي", schedule: [{ center: "مجمع أبو عريش للبنين", day: "الأحد", date: "26/ 02/ 1448هـ", time: "8 - 10ص", period: "الأولى", room: "1" }, { center: "مجمع أبو عريش للبنين", day: "الاثنين", date: "27/ 02/ 1448هـ", time: "8 - 10ص", period: "الأولى", room: "1" }, { center: "مجمع أبو عريش للبنين", day: "الثلاثاء", date: "28/ 02/ 1448هـ", time: "8 - 10ص", period: "الأولى", room: "1" }] },
+            "4373051": { name: "د. ﻋﺒﺪﺍﻟﺮﺣﻤﻦ ﺯﺍﺣﻢ ﺷﺮﺍﺭ ﺍﻟﺴﻠﻤﻲ", schedule: [{ center: "مجمع أبو عريش للبنين", day: "الأحد", date: "26/ 02/ 1448هـ", time: "8 - 10ص", period: "الأولى", room: "1" }, { center: "مجمع أبو عريش للبنين", day: "الاثنين", date: "27/ 02/ 1448هـ", time: "8 - 10ص", period: "الأولى", room: "1" }, { center: "مجمع أبو عريش للبنين", day: "الثلاثاء", date: "28/ 02/ 1448هـ", time: "8 - 10ص", period: "الأولى", room: "1" }] },
+            "4358051": { name: "أ. ذهبة بنت أحمد أحمد سلامي", schedule: [{ center: "المجمع الأكاديمي الشرقي", day: "الأحد", date: "26/ 02/ 1448هـ", time: "8:00 - 10:00ص", period: "الأولى", room: "SO19" }] },
+            "4395884": { name: "أ. زهراء بنت قاسم محمد شماخي", schedule: [{ center: "المجمع الأكاديمي الشرقي", day: "الأحد", date: "26/ 02/ 1448هـ", time: "8:00 - 10:00ص", period: "الأولى", room: "SO19" }] },
+            "4416945": { name: "أ. روبا بنت ناصر عبدالله الحربي", schedule: [{ center: "المجمع الأكاديمي الشرقي", day: "الأحد", date: "26/ 02/ 1448هـ", time: "8:00 - 10:00ص", period: "الأولى", room: "SO19" }, { center: "المجمع الأكاديمي الشرقي", day: "الأحد", date: "26/ 02/ 1448هـ", time: "10:00ص - 12:30م", period: "الثانية", room: "SO19" }] },
+            "4438076": { name: "أ. نهاد بنت إبراهيم إبراهيم شعبي", schedule: [{ center: "المجمع الأكاديمي الشرقي", day: "الاثنين", date: "27/ 02/ 1448هـ", time: "8:00 - 10:00ص", period: "الأولى", room: "SO19" }] },
+            "4357928": { name: "أ. ليلى بنت إسماعيل محمد قميري", schedule: [{ center: "المجمع الأكاديمي الشرقي", day: "الاثنين", date: "27/ 02/ 1448هـ", time: "8:00 - 10:00ص", period: "الأولى", room: "SO19" }] },
+            "4356105": { name: "أ. منى بنت عيسى محمد خواجي", schedule: [{ center: "المجمع الأكاديمي الشرقي", day: "الاثنين", date: "27/ 02/ 1448هـ", time: "8:00 - 10:00ص", period: "الأولى", room: "SO19" }] }
+        };
+
+        const penalList = [
+            { id: "202410089", name: "عبدالله موسى محمد حكمي" }, { id: "202409995", name: "أيمن محمد علي هتان" }, { id: "202301316", name: "عبدالله بن علي بن عبدالله خزاعي حمدي" }, { id: "202410095", name: "محمد عبدالله احمد عقدي" }, { id: "202300241", name: "اصيل بن حسين بن يحي هروبي" }, { id: "202410084", name: "احمد علي أحمد حمدي" }, { id: "202418671", name: "عماد ابراهيم بن حسن حمدي" }, { id: "202410052", name: "عبدالكريم جمال عبدالله باحسن" }, { id: "202410051", name: "علي احمد علي آل عمر" }, { id: "202303007", name: "يحي بن حسين بن مصلح مباركي" }, { id: "202410033", name: "ثامر ابراهيم حسين صميلي" }, { id: "202413131", name: "محمد توفيق محمد الجهني" }, { id: "202410054", name: "طلال احمد محمد مجاشي" }, { id: "202206216", name: "عمر مفرح جابر لغبي" }, { id: "202410067", name: "حسن بن علي بن جبران حنشلي" }, { id: "202302709", name: "مداهي بن مفرح بن مداهي الريثي" }, { id: "202409999", name: "أحمد صالح احمد القرني" }, { id: "202410044", name: "محمد عيسى موسى عريجي" }, { id: "202405092", name: "عبداللطيف مفرح علي لغبي" }, { id: "202410085", name: "عماد بن حسن بن علي صميلي" }, { id: "202410031", name: "ناصر عبده عبدالله حمدي" }, { id: "202410082", name: "احمد علي محمد بكري" }, { id: "202410099", name: "حسام احمد منصور صميلي" }, { id: "202418510", name: "يحي حسـن يحي امشريف" }, { id: "202105123", name: "محمد غازي راجح أ بوعله" }, { id: "202301911", name: "احمد بن ابراهيم بن مهدي حبيب" }, { id: "202410005", name: "سعود علي يحي الفيفي" }
+        ];
+
+        const intListRoom1 = [
+            { id: "202418677", name: "مهند رمضان احمد خبراني" }, { id: "202300241", name: "اصيل بن حسين بن يحي هروبي" }, { id: "202410031", name: "ناصر عبده عبدالله حمدي" }, { id: "202200293", name: "حسان عبدالرحمن مسفوه المالكي" }, { id: "202405092", name: "عبداللطيف مفرح علي لغبي" }, { id: "202509406", name: "خالد سمير خالد رفاعي" }, { id: "202410096", name: "علي حسين طاهر حمدي" }, { id: "202410076", name: "تركي ابراهيم حسين حكمي" }, { id: "202410046", name: "يزن خفير بن زارع العمري" }, { id: "202506769", name: "يحيى عصام يحي الشيخ" }, { id: "202505940", name: "سعود اسماعيل حسين شيبه" }, { id: "202410005", name: "سعود علي يحي الفيفي" }, { id: "202410026", name: "أنس علي احمد معافا" }, { id: "202508961", name: "عبدالرحمن محمد جابر قرادي" }, { id: "202410033", name: "ثامر ابراهيم حسين صميلي" }, { id: "202410084", name: "احمد علي أحمد حمدي" }, { id: "202413131", name: "محمد توفيق محمد الجهني" }, { id: "202410038", name: "عبدالاله حمود يحي الشيخ" }, { id: "202418671", name: "عماد ابراهيم بن حسن حمدي" }, { id: "202410027", name: "عماد يحي شوعي حمدي" }, { id: "202410095", name: "محمد عبدالله احمد عقدي" }, { id: "202410025", name: "عايض يحي بن حسن غزواني" }, { id: "202410087", name: "أسامة حسن علي عناب" }, { id: "202410044", name: "محمد عيسى موسى عريجي" }, { id: "202410052", name: "عبدالكريم جمال عبدالله باحسن" }
+        ];
+
+        const intListRoom2 = [
+            { id: "202410082", name: "احمد علي محمد بكري" }, { id: "202410097", name: "أحمد بن هادي بن احمد الحاج عاتي" }, { id: "202410058", name: "مشعل ناصر يحي شعواني" }, { id: "202410100", name: "ابراهيم عصام ابراهيم مخيزن" }, { id: "202410054", name: "طلال احمد محمد مجاشي" }, { id: "202300205", name: "خالد سلمان مفرح الجابري" }, { id: "202410075", name: "ايمن بن احمد بن يحي دايلي" }, { id: "202410239", name: "فيصل خالد بن ناصر البقمي" }, { id: "202302350", name: "محمد عبدالرحمن بن مسفوه العليلي المالكي" }, { id: "202302710", name: "محمد بن ابراهيم بن محمد حسين زيلع" }, { id: "202410085", name: "عماد بن حسن بن علي صميلي" }, { id: "202410006", name: "ابراهيم محمد محمد مجرشي" }, { id: "202410030", name: "وسيم محمد ابراهيم حكمي" }, { id: "202417314", name: "عبدالرحمن علي محمد حلل" }, { id: "202506043", name: "علي محمد علي معشي" }, { id: "202507050", name: "محمد وائل محمد بغدادي" }, { id: "202409995", name: "أيمن محمد علي هتان" }, { id: "202410051", name: "علي احمد علي آل عمر" }, { id: "202506413", name: "محمد صالح علي عقيلي" }, { id: "202418355", name: "علي احمد علي هديس" }, { id: "202410036", name: "عبدالوهاب بن عبدالله بن عبدالرحمن الحازمي" }, { id: "202410099", name: "حسام احمد منصور صميلي" }, { id: "202418510", name: "يحي حسـن يحي امشريف" }, { id: "202410016", name: "عبد الرحمن بن محمد بن يحيى العزي" }
+        ];
+
+        const insListRoom1 = [
+            { id: "202418677", name: "مهند رمضان احمد خبراني" }, { id: "202410036", name: "عبدالوهاب بن عبدالله بن عبدالرحمن الحازمي" }, { id: "202200293", name: "حسان عبدالرحمن مسفوه المالكي" }, { id: "202405092", name: "عبداللطيف مفرح علي لغبي" }, { id: "202509406", name: "خالد سمير خالد رفاعي" }, { id: "202410076", name: "تركي ابراهيم حسين حكمي" }, { id: "202410046", name: "يزن خفير بن زارع العمري" }, { id: "202505940", name: "سعود اسماعيل حسين شيبه" }, { id: "202303007", name: "يحي بن حسين بن مصلح مباركي" }, { id: "202410005", name: "سعود علي يحي الفيفي" }, { id: "202410026", name: "أنس علي احمد معافا" }, { id: "202300241", name: "اصيل بن حسين بن يحي هروبي" }, { id: "202410019", name: "يزن عبدالله محمد شريف" }, { id: "202410039", name: "ناصر احمد محمد الحربي" }, { id: "202410025", name: "عايض يحي بن حسن غزواني" }, { id: "202410087", name: "أسامة حسن علي عناب" }, { id: "202410016", name: "عبد الرحمن بن محمد بن يحيى العزي" }, { id: "202410097", name: "أحمد بن هادي بن احمد الحاج عاتي" }, { id: "202410058", name: "مشعل ناصر يحي شعواني" }, { id: "202410100", name: "ابراهيم عصام ابراهيم مخيزن" }
+        ];
+
+        const insListRoom2 = [
+            { id: "202410054", name: "طلال احمد محمد مجاشي" }, { id: "202410065", name: "محمود محمد عبده بدري" }, { id: "202410038", name: "عبدالاله حمود يحي الشيخ" }, { id: "202410061", name: "عبدالرحمن صبري محمد شريم" }, { id: "202410073", name: "محمد بندر محمد الزهراني" }, { id: "202206216", name: "عمر مفرح جابر لغبي" }, { id: "202410003", name: "زياد عبدالله عمر العطاس" }, { id: "202409997", name: "ماجد يحي ابراهيم شيبان" }, { id: "202410094", name: "عبدالكريم عيسي عبده مسملي" }, { id: "202508961", name: "عبدالرحمن محمد جابر قرادي" }, { id: "202506043", name: "علي محمد علي معشي" }, { id: "202506769", name: "يحيى عصام يحي الشيخ" }, { id: "202302350", name: "محمد عبدالرحمن بن مسفوه العليلي المالكي" }, { id: "202507050", name: "محمد وائل محمد بغدادي" }, { id: "202410075", name: "ايمن بن احمد بن يحي دايلي" }, { id: "202410239", name: "فيصل خالد بن ناصر البقمي" }, { id: "202410030", name: "وسيم محمد ابراهيم حكمي" }, { id: "202410010", name: "عدي يحي علي دوم مدخلي" }, { id: "202417314", name: "عبدالرحمن علي محمد حلل" }, { id: "202418510", name: "يحي حسـن يحي امشريف" }
+        ];
+
+        const femaleUsulList = [
+            { id: "202206807", name: "أميره موسي احمد حريصي" }, { id: "202209346", name: "عهود علي محمد حسن طوهري" }, { id: "202304786", name: "ود بنت محمد بن يحيى صميلي" }, { id: "202305231", name: "نوره بنت عمران بن مهدي قاسم منقري" }, { id: "202306505", name: "عالية بنت حسن بن يحي بن علي بن عياشي مجرشي" }, { id: "202307186", name: "رؤى بنت علي بن مربع نشيلي" }, { id: "202413531", name: "وجدان مطاعن علي جلي" }, { id: "202415807", name: "مريم علي محمد علواني" }, { id: "202415863", name: "نوره صغير شوعي عواجي" }, { id: "202415906", name: "صفيه مناجي جنيد عقيل" }, { id: "202416062", name: "رزان وحيد قاسم احمديني" }, { id: "202416096", name: "فايقه علي محمد دربشي" }, { id: "202416176", name: "ريماس احمد ابراهيم الجفير" }, { id: "202416178", name: "ناهل محمد حمد قيسي" }, { id: "202416605", name: "سمر علي بن شوعي حمدي" }, { id: "202416970", name: "ريم عبدالله علي كعبي" }, { id: "202417001", name: "فاطمه ابراهيم علي عسيري" }, { id: "202417010", name: "نجود محمد محمد سحاري" }, { id: "202417105", name: "نوف حسين جبريل قيسي" }, { id: "202417258", name: "الزهراء محمد علي هجري" }, { id: "202417266", name: "امل بنت محمد بن احمد العزي" }, { id: "202417359", name: "ليان حسن محمد ديباجي" }, { id: "202417561", name: "زينه يحي بن علي الحريصي" }, { id: "202418016", name: "دانه معين بن عبدالعزيز الشريف" }, { id: "202418230", name: "طيبه أحمد شامي الحمضي" }, { id: "202500326", name: "مشاعل حسين بن حسن عبدلي" }, { id: "202501237", name: "في ماجد سعد السبيعي" }, { id: "202502531", name: "شذى ناصر محمد مثني" }, { id: "202504727", name: "تالا رياض بن محسن بن احمد خواجي" }, { id: "202511197", name: "فاطمه بنت ابراهيم بن حسن بن يحي دوشي" }, { id: "202416243", name: "ذكرى محمد محمد ابوهادي" }, { id: "202416416", name: "رنا عبدالرحمن احمد البنا" }
+        ];
+
+        const femaleEjraatList = [
+            { id: "202304786", name: "ود بنت محمد بن يحيى صميلي" },
+            { id: "202305231", name: "نوره بنت عمران بن مهدي قاسم منقري" }
+        ];
+
+        const femaleQadaList = [
+            { id: "202207011", name: "ندابنت محمد عثمان محمد حكمي" }, { id: "202304786", name: "ود بنت محمد بن يحيى صميلي" }, { id: "202307186", name: "رؤى بنت علي بن مربع نشيلي" }, { id: "202411108", name: "ريم ناصر عبدالله الحربي" }, { id: "202413531", name: "وجدان مطاعن علي جلي" }, { id: "202415766", name: "جنى يحي علي الحازمي" }, { id: "202415807", name: "مريم علي محمد علواني" }, { id: "202415863", name: "نوره صغير شوعي عواجي" }, { id: "202415906", name: "صفيه مناجي جنيد عقيل" }, { id: "202416062", name: "رزان وحيد قاسم احمديني" }, { id: "202416096", name: "فايقه علي محمد دربشي" }, { id: "202416178", name: "ناهل محمد حمد قيسي" }, { id: "202416243", name: "ذكرى محمد محمد ابوهادي" }, { id: "202416605", name: "سمر علي بن شوعي حمدي" }, { id: "202416970", name: "ريم عبدالله علي كعبي" }, { id: "202417001", name: "فاطمه ابراهيم علي عسيري" }, { id: "202417010", name: "نجود محمد محمد سحاري" }, { id: "202417105", name: "نوف حسين جبريل قيسي" }, { id: "202417258", name: "الزهراء محمد علي هجري" }, { id: "202417266", name: "امل بنت محمد بن احمد العزي" }, { id: "202417561", name: "زينه يحي بن علي الحريصي" }, { id: "202418016", name: "دانه معين بن عبدالعزيز الشريف" }, { id: "202418230", name: "طيبه أحمد شامي الحمضي" }, { id: "202500326", name: "مشاعل حسين بن حسن عبدلي" }, { id: "202501237", name: "في ماجد سعد السبيعي" }, { id: "202502531", name: "شذى ناصر محمد مثني" }, { id: "202504727", name: "تالا رياض بن محسن بن احمد خواجي" }, { id: "202511197", name: "فاطمه بنت ابراهيم بن حسن بن يحي دوشي" }, { id: "202513974", name: "حصه محمد علي جماح" }, { id: "202513982", name: "بيان محمد علي قاسم" }, { id: "202306505", name: "عالية بنت حسن بن يحي بن علي بن عياشي مجرشي" }, { id: "202417359", name: "ليان حسن محمد ديباجي" }
+        ];
+
+        const femaleOsraList = [
+            { id: "202103800", name: "ندى قاسم محمد حاتم عتودي" }
+        ];
+
+        function generateCompleteStudentData() {
+            let list = [];
+            const addEntries = (array, courseObj) => {
+                array.forEach(item => {
+                    let existing = list.find(s => s.id === item.id);
+                    if (existing) {
+                        existing.courses.push(courseObj);
+                        if(item.name) existing.name = item.name;
+                    } else {
+                        list.push({ id: item.id, name: item.name, courses: [courseObj] });
+                    }
+                });
+            };
+
+            addEntries(penalList, penal_R1);
+            addEntries(intListRoom1, int_R1);
+            addEntries(intListRoom2, int_R2);
+            addEntries(insListRoom1, ins_R1);
+            addEntries(insListRoom2, ins_R2);
+            addEntries(femaleUsulList, usul_Female);
+            addEntries(femaleEjraatList, ejraat_Female);
+            addEntries(femaleQadaList, qada_Female);
+            addEntries(femaleOsraList, osra_Female);
+
+            return list;
+        }
+
+        const studentsDatabase = generateCompleteStudentData();
+
+        function switchMainTab(type) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.search-section').forEach(sec => sec.classList.remove('active'));
+
+            if(type === 'faculty') {
+                document.getElementById('tabFaculty').classList.add('active');
+                document.getElementById('facultySection').classList.add('active');
+            } else {
+                document.getElementById('tabStudents').classList.add('active');
+                document.getElementById('studentsSection').classList.add('active');
+            }
+        }
+
+        function switchFacultySub(type) {
+            document.getElementById('proctoringTabBtn').classList.remove('active');
+            document.getElementById('schedulesTabBtn').classList.remove('active');
+            document.getElementById('proctoringSub').style.display = 'none';
+            document.getElementById('schedulesSub').style.display = 'none';
+
+            if(type === 'proctoring') {
+                document.getElementById('proctoringTabBtn').classList.add('active');
+                document.getElementById('proctoringSub').style.display = 'block';
+            } else {
+                document.getElementById('schedulesTabBtn').classList.add('active');
+                document.getElementById('schedulesSub').style.display = 'block';
+                updateSheets();
+            }
+        }
+
+        function verifyFacultyLogin() {
+            const facultyId = document.getElementById('facultyId').value.trim();
+            const errorDiv = document.getElementById('loginError');
+            const resultDiv = document.getElementById('facultyResult');
+            const loginBox = document.getElementById('facultyLoginBox');
+            const contentArea = document.getElementById('facultyContentArea');
+
+            errorDiv.innerHTML = '';
+            
+            if (facultyDatabase[facultyId]) {
+                const member = facultyDatabase[facultyId];
+                loginBox.style.display = 'none';
+                contentArea.style.display = 'block';
+
+                let scheduleRows = member.schedule.map(s => `
+                    <tr>
+                        <td>${s.center}</td>
+                        <td>${s.day}</td>
+                        <td>${s.date}</td>
+                        <td>${s.time}</td>
+                        <td>${s.period}</td>
+                        <td>${s.room}</td>
+                    </tr>
+                `).join('');
+
+                resultDiv.innerHTML = `
+                    <div style="background:#eef6ff; padding:15px; border-radius:8px; margin-bottom:15px; text-align:right;">
+                        <h3 style="margin:0; color:#0056b3;">أهلاً بك: ${member.name}</h3>
+                        <p style="margin:5px 0 0 0; color:#555; font-weight:bold;">الرقم الوظيفي: ${facultyId}</p>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>المقر</th>
+                                <th>اليوم</th>
+                                <th>التاريخ</th>
+                                <th>الوقت</th>
+                                <th>الفترة</th>
+                                <th>القاعة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${scheduleRows}
+                        </tbody>
+                    </table>
+                    <div class="thanks-footer">شاكرين ومقدرين جهودكم المباركة، متمنين لكم التوفيق والسداد.</div>
+                `;
+            } else if (facultyId.startsWith('4')) {
+                loginBox.style.display = 'none';
+                contentArea.style.display = 'block';
+
+                resultDiv.innerHTML = `
+                    <div style="background:#fff3cd; color:#856404; padding:18px; border-radius:8px; margin-bottom:15px; text-align:center; border:1px solid #ffeeba; font-weight:bold; font-size:16px;">
+                        لا توجد مراقبات مجدولة لهذا الرقم الوظيفي، ويمكنكم الاطلاع على كشوف الحضور من التبويب الخاص بها.
+                    </div>
+                    <div class="thanks-footer">شاكرين ومقدرين جهودكم المباركة، متمنين لكم التوفيق والسداد.</div>
+                `;
+            } else {
+                errorDiv.innerHTML = '<p class="error">عذراً، الرقم الوظيفي غير مسجل في النظام.</p>';
+            }
+        }
+
+        function searchStudent() {
+            const studentId = document.getElementById('studentId').value.trim();
+            const resultDiv = document.getElementById('studentResult');
+            
+            if (!studentId) {
+                resultDiv.innerHTML = '<p class="error">رجاءً أدخل الرقم الجامعي.</p>';
+                return;
+            }
+
+            const student = studentsDatabase.find(s => s.id === studentId);
+
+            if (student) {
+                let courseRows = student.courses.map(c => `
+                    <tr>
+                        <td>${c.center}</td>
+                        <td>${c.code}</td>
+                        <td>${c.name}</td>
+                        <td>${c.section}</td>
+                        <td>${c.day}</td>
+                        <td>${c.date}</td>
+                        <td>${c.time}</td>
+                        <td>${c.room}</td>
+                    </tr>
+                `).join('');
+
+                resultDiv.innerHTML = `
+                    <div style="background:#eef6ff; padding:15px; border-radius:8px; margin-top:20px; text-align:right;">
+                        <h3 style="margin:0; color:#0056b3;">اسم الطالب/الطالبة: ${student.name}</h3>
+                        <p style="margin:5px 0 0 0; color:#555; font-weight:bold;">الرقم الجامعي: ${student.id}</p>
+                    </div>
+                    <table style="margin-top:15px;">
+                        <thead>
+                            <tr>
+                                <th>مقر الاختبار</th>
+                                <th>رمز المقرر</th>
+                                <th>اسم المقرر</th>
+                                <th>الشعبة</th>
+                                <th>اليوم</th>
+                                <th>التاريخ</th>
+                                <th>الوقت</th>
+                                <th>القاعة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${courseRows}
+                        </tbody>
+                    </table>
+                    <div class="student-wishes">دعواتنا لكم بالتوفيق والسداد في الدارين</div>
+                `;
+            } else {
+                resultDiv.innerHTML = '<p class="error">عذراً، الرقم الجامعي غير موجود في القاعدة.</p>';
+            }
+        }
+
+        // تحديث خيارات المقررات بناء على الشطر المختار تلقائياً
+        function populateCourseOptions() {
+            const gender = document.getElementById('genderFilter').value;
+            const courseSelect = document.getElementById('courseFilter');
+            courseSelect.innerHTML = '';
+
+            if (gender === 'male') {
+                courseSelect.innerHTML = `
+                    <option value="ins" selected>نظام التأمين (425قنن)</option>
+                    <option value="penal">نظام الإجراءات الجزائية (411قنن)</option>
+                    <option value="int">النظام الدولي الخاص (421قنن)</option>
+                `;
+            } else {
+                courseSelect.innerHTML = `
+                    <option value="usul" selected>أصول الفقه (424أصل-3)</option>
+                    <option value="ejraat_female">الإجراءات الجزائية (430نظم-2)</option>
+                    <option value="qada_female">القضاء والإثبات (417فقه-3)</option>
+                    <option value="osra_female">فقه الأسرة-2 (327فقه-2)</option>
+                `;
+            }
+        }
+
+        function onGenderChange() {
+            const gender = document.getElementById('genderFilter').value;
+            const roomSelect = document.getElementById('roomFilter');
+            
+            populateCourseOptions();
+
+            if(gender === 'female') {
+                roomSelect.value = 'SO19';
+            } else {
+                roomSelect.value = '1';
+            }
+            syncSectionByCourse();
+        }
+
+        function syncCourseBySection() {
+            const sec = document.getElementById('sectionFilter').value.trim();
+            const courseSelect = document.getElementById('courseFilter');
+            const genderSelect = document.getElementById('genderFilter');
+
+            if (sec === "24") { genderSelect.value = "male"; populateCourseOptions(); courseSelect.value = "ins"; }
+            else if (sec === "44") { genderSelect.value = "male"; populateCourseOptions(); courseSelect.value = "penal"; }
+            else if (sec === "36") { genderSelect.value = "male"; populateCourseOptions(); courseSelect.value = "int"; }
+            else if (sec === "8") { genderSelect.value = "female"; populateCourseOptions(); courseSelect.value = "usul"; }
+            else if (sec === "27") { genderSelect.value = "female"; populateCourseOptions(); courseSelect.value = "ejraat_female"; }
+            else if (sec === "28") { genderSelect.value = "female"; populateCourseOptions(); courseSelect.value = "qada_female"; }
+            else if (sec === "29") { genderSelect.value = "female"; populateCourseOptions(); courseSelect.value = "osra_female"; }
+            
+            updateSheets();
+        }
+
+        function syncSectionByCourse() {
+            const course = document.getElementById('courseFilter').value;
+            const secInput = document.getElementById('sectionFilter');
+
+            if (course === "ins") { secInput.value = "24"; }
+            else if (course === "penal") { secInput.value = "44"; }
+            else if (course === "int") { secInput.value = "36"; }
+            else if (course === "usul") { secInput.value = "8"; }
+            else if (course === "ejraat_female") { secInput.value = "27"; }
+            else if (course === "qada_female") { secInput.value = "28"; }
+            else if (course === "osra_female") { secInput.value = "29"; }
+
+            updateSheets();
+        }
+
+        function updateSheets() {
+            const courseKey = document.getElementById('courseFilter').value;
+            const room = document.getElementById('roomFilter').value;
+            const container = document.getElementById('attendanceSheetContainer');
+
+            let courseData = null;
+            let studentList = [];
+
+            if (courseKey === 'penal') {
+                courseData = penal_R1; studentList = penalList;
+            } else if (courseKey === 'int') {
+                courseData = (room === '2') ? int_R2 : int_R1;
+                studentList = (room === '2') ? intListRoom2 : intListRoom1;
+            } else if (courseKey === 'ins') {
+                courseData = (room === '2') ? ins_R2 : ins_R1;
+                studentList = (room === '2') ? insListRoom2 : insListRoom1;
+            } else if (courseKey === 'usul') {
+                courseData = usul_Female; studentList = femaleUsulList;
+            } else if (courseKey === 'ejraat_female') {
+                courseData = ejraat_Female; studentList = femaleEjraatList;
+            } else if (courseKey === 'qada_female') {
+                courseData = qada_Female; studentList = femaleQadaList;
+            } else if (courseKey === 'osra_female') {
+                courseData = osra_Female; studentList = femaleOsraList;
+            }
+
+            if (!courseData) return;
+
+            let rowsHtml = studentList.map((st, idx) => `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${st.id}</td>
+                    <td style="text-align: right; padding-right: 15px;">${st.name}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="attendance-sheet">
+                    <div class="sheet-header-top">
+                        <div style="text-align: right;">
+                            <strong>المملكة العربية السعودية</strong><br>
+                             وزارة التعليم<br>
+                             جامعة جازان<br>
+                             كلية الشريعة والقانون
+                        </div>
+                        <img src="https://cdn.phototourl.com/free/2026-08-03-595b3f0e-ace4-4b94-bd38-30d21872c3b6.jpg" class="sheet-header-logo" alt="شعار الجامعة">
+                        <div style="text-align: left;">
+                            <strong>كشف حضور وتوقيع الطلاب/ الطالبات</strong><br>
+                            في الاختبار النهائي للعام 1448هـ<br>
+                            الفصل الصيفي
+                        </div>
+                    </div>
+
+                    <div class="sheet-info-grid">
+                        <div><strong>اسم المقرر:</strong> ${courseData.name} (${courseData.code})</div>
+                        <div><strong>أستاذ المقرر:</strong> ${courseData.instructor}</div>
+                        <div><strong>رقم الشعبة:</strong> ${courseData.section}</div>
+                        <div><strong>مقر الاختبار:</strong> ${courseData.center}</div>
+                        <div><strong>اليوم والتاريخ:</strong> ${courseData.day} ${courseData.date}</div>
+                        <div><strong>الوقت / القاعة:</strong> ${courseData.time} (قاعة ${courseData.room})</div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">م</th>
+                                <th style="width: 20%;">الرقم الجامعي</th>
+                                <th style="width: 40%;">الاسم</th>
+                                <th style="width: 15%;">حالة الطالب</th>
+                                <th style="width: 20%;">التوقيع</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml}
+                        </tbody>
+                    </table>
+
+                    <div class="count-summary">
+                        <span>إجمالي المسجلين: ${studentList.length}</span>
+                        <span>عدد الحاضرين: ........</span>
+                        <span>عدد الغائبين: ........</span>
+                    </div>
+
+                    <div class="signatures-area">
+                        <div>اسم رئيس اللجنة: ................................... التوقيع: ...................</div>
+                        <div>اسم المراقب الأول: ................................... التوقيع: ...................</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.onload = function() {
+            populateCourseOptions();
+            updateSheets();
+        };
+    </script>
+</body>
+</html>
